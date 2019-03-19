@@ -3,12 +3,12 @@ total = 0
 
 loop do
   puts "Введите название товара или 'стоп' для завершения ввода:"
-  title = gets.chomp
+  title = gets.chomp.downcase
   break if title == 'стоп'
   puts "Введите цену товара:"
-  price = gets.chomp.to_f
+  price = gets.to_f
   puts "Введите количество товара:"
-  quantity = gets.chomp.to_f
+  quantity = gets.to_f
   cart[title] = { price: price, quantity: quantity }
 end
 

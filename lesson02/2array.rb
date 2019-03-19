@@ -1,9 +1,1 @@
-numbers = []
-num = 10
-
-while num <= 100 do
-  numbers << num
-  num += 5
-end
-
-puts numbers
+puts (10..100).step(5).to_a

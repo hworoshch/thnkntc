@@ -1,14 +1,15 @@
 days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 puts "Введите день:"
-day = gets.chomp.to_i
+day = gets.to_i
 puts "Введите месяц:"
-month = gets.chomp.to_i
+month = gets.to_i
 puts "Введите год:"
-year = gets.chomp.to_i
+year = gets.to_i
 
+leap_year = year % 4 == 0 && year % 100 != 0 || year % 400 == 0
 days_count = day
-days.first(month - 1).each { |d| days_count += d }
-days_count += 1 if month > 2 && year % 4 == 0 && ( year % 400 == 0 || year % 100 != 0 )
+days_count += 1 if month > 2 && leap_year
+days_count += days.first(month - 1).sum
 
 puts days_count
