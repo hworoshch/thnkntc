@@ -1,4 +1,3 @@
-triangle = Array.new
 puts "Введите 1 сторону треугольника:"
 triangle1 = gets.to_i
 puts "Введите 2 сторону треугольника:"
