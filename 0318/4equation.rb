@@ -1,21 +1,20 @@
 puts "Введите коэффициент a:"
-a = gets.to_i
+a = gets.to_f
 puts "Введите коэффициент b:"
-b = gets.to_i
+b = gets.to_f
 puts "Введите коээфициент c:"
-c = gets.to_i
+c = gets.to_f
 
 d = (b**2) - (4 * a * c)
 
-if d < 0
-  puts "D = #{d}; корней нет"
+if d == 0
+  x = -b / (2.0 * a)
+  puts "D = #{d}; корень = #{x}"
+elsif d > 0
+  sqrtd = Math.sqrt(d)
+  x1 = (-b + sqrtd) / (2.0 * a)
+  x2 = (-b - sqrtd) / (2.0 * a)
+  puts "D = #{d}; x1 = #{x1}; x2 = #{x2}"
 else
-  x1 = (-b + Math.sqrt(d)) / (2 * a)
-  x2 = (-b - Math.sqrt(d)) / (2 * a)
-  if d == 0
-    puts "D = #{d}; корень = #{x1}"
-  else
-    puts "D = #{d}; x1 = #{x1}; x2 = #{x2}"
-  end
+  puts "D = #{d}; корней нет"
 end
-

@@ -1,47 +1,25 @@
+triangle = []
 puts "Введите 1 сторону треугольника:"
-triangle1 = gets.to_i
+triangle << gets.to_f
 puts "Введите 2 сторону треугольника:"
-triangle2 = gets.to_i
+triangle << gets.to_f
 puts "Введите 3 сторону треугольника:"
-triangle3 = gets.to_i
+triangle << gets.to_f
 
-result = ""
+cathetus1, cathetus2, hypotenuse = triangle.sort!
 
-if triangle1 == triangle2 || triangle2 == triangle3 || triangle1 == triangle3
-  result = "Треугольник является равнобедренным"
-  if triangle1 == triangle2 && triangle2 == triangle3
-    result += " и равносторонним. "
-  else
-    result += ". "
+right_triangle = cathetus1**2 + cathetus2**2 == hypotenuse**2
+
+if right_triangle
+  result = "Треугольник прямоугольный"
+  if cathetus1 == cathetus2
+    result += " и равнобедренный"
   end
-end
-
-if triangle1 > triangle2
-  if triangle1 > triangle3
-    c = triangle1
-    a = triangle2
-    b = triangle3
-  else
-    c = triangle3
-    a = triangle1
-    b = triangle2
-  end
+elsif cathetus1 == cathetus2 && cathetus2 == hypotenuse
+  result = "Треугольник равнобедренный и равносторонний, но не прямоугольный"
 else
-  if triangle2 > triangle3
-    c = triangle2
-    a = triangle1
-    b = triangle3
-  else
-    c = triangle3
-    a = triangle1
-    b = triangle2
-  end
-end
-
-if a**2 + b**2 == c**2
-  result += "Треугольник является прямоугольным."
-else
-  result += "Треугольник не является прямоугольным."
+  result = "Треугольник не прямоугольный"
 end
 
 puts result
+  
