@@ -10,16 +10,12 @@ cathetus1, cathetus2, hypotenuse = triangle.sort!
 
 right_triangle = cathetus1**2 + cathetus2**2 == hypotenuse**2
 
-if right_triangle
-  result = "Треугольник прямоугольный"
-  if cathetus1 == cathetus2
-    result += " и равнобедренный"
-  end
-elsif cathetus1 == cathetus2 && cathetus2 == hypotenuse
-  result = "Треугольник равнобедренный и равносторонний, но не прямоугольный"
+if right_triangle && cathetus1 == cathetus2
+  puts "Треугольник прямоугольный и равнобедренный"
+elsif right_triangle
+  puts "Треугольник прямоугольный"
+elsif cathetus1 == hypotenuse
+  puts "Треугольник равнобедренный и равносторонний, но не прямоугольный"
 else
-  result = "Треугольник не прямоугольный"
+  puts "Треугольник не прямоугольный"
 end
-
-puts result
-  
