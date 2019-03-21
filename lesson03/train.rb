@@ -23,6 +23,7 @@ class Train
   end
 
   def remove_car
+    return unless speed.zero?
     @cars_count -= 1 if @cars_count > 0
   end
 
