@@ -1,10 +1,10 @@
 class Train
 
-  attr_reader :cars_count, :speed, :train_type
+  attr_reader :cars_count, :speed, :type
 
-  def initialize(number, train_type, cars_count)
+  def initialize(number, type, cars_count)
     @number = number
-    @train_type = train_type
+    @type = type
     @cars_count = cars_count
     @speed = 0
   end
@@ -18,49 +18,44 @@ class Train
   end
 
   def add_car
-    stop
+    return unless speed.zero?
     @cars_count += 1
   end
 
   def remove_car
-    stop
-    @cars_count -= 1
+    @cars_count -= 1 if @cars_count > 0
   end
 
   def set_route(route)
     @route = route
-    @stations = route.stations
-    @stations.first.incoming_train(self)
     @current_station = 0
-    puts @stations[@current_station]
+    current_station.add_train(self)
   end
 
   def move_forward
-    if @current_station < @stations.size - 1
-      @stations[@current_station].outgoing_train(self)
-      @current_station += 1
-      @stations[@current_station].incoming_train(self)
-    end
+    return unless next_station
+    current_station.remove_train(self)
+    @current_station += 1
+    current_station.add_train(self)
   end
 
   def move_back
-    if @current_station > 0
-      @stations[@current_station].outgoing_train(self)
-      @current_station -= 1
-      @stations[@current_station].incoming_train(self)
-    end
+    return unless previous_station
+    current_station.remove_train(self)
+    @current_station -= 1
+    current_station.add_train(self)
   end
 
   def next_station
-    @stations[@current_station + 1] if @current_station < @stations.size - 1
+    @route.stations[@current_station + 1]
   end
 
   def current_station
-    @stations[@current_station]
+    @route.stations[@current_station]
   end
 
   def previous_station
-    @stations[@current_station - 1] if @current_station > 0
+    @route.stations[@current_station - 1] if @current_station > 0
   end
 
 end

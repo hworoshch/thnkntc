@@ -7,20 +7,16 @@ class Station
     @trains = []
   end
 
-  def incoming_train(train)
+  def add_train(train)
     @trains << train
   end
 
-  def outgoing_train(train)
+  def remove_train(train)
     @trains.delete(train)
   end
 
-  def cargo_trains
-    @trains.select { |train| train.train_type == "cargo" }
-  end
-
-  def passenger_trains
-    @trains.select { |train| train.train_type == "passenger" }
+  def trains_by_type(type)
+    @trains.select { |train| train.type == type }
   end
 
 end
