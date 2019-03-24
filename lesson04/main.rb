@@ -97,9 +97,11 @@ class Main
     start_station = select_from_collection(Station.all)
     hr
     puts "Введите номер конечной станции:"
-    end_station = select_from_collection(Station.all - [start_station])
+    available_stations = Station.all - [start_station]
+    show_collection(available_stations)
+    end_station = select_from_collection(available_stations)
     return if start_station.nil? || end_station.nil?
-    route = Route.new(start_station, end_station)
+    Route.new(start_station, end_station)
   end
 
   def manage_route
@@ -132,7 +134,7 @@ class Main
     spacer
     puts "Введите номер удаляемой станции:"
     show_collection(route.stations)
-    station =  select_from_collection(route.stations)
+    station = select_from_collection(route.stations)
     route.remove_station(station)
   end
 
