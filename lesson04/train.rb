@@ -1,8 +1,6 @@
 class Train
 
-  attr_reader :speed
-  attr_reader :number
-  attr_reader :cars
+  attr_reader :speed, :number, :cars
 
   def initialize(number)
     @number = number
@@ -20,9 +18,11 @@ class Train
   end
 
   def add_car(car)
-    return unless speed.zero? || car.type != type || car.train.present?
-    car.train = self
+    return unless speed.zero? 
+    return unless attachable_car?(car)
+    return if car.attached?
     @cars << car
+    car.attached!
   end
 
   def remove_car(car)
@@ -55,20 +55,24 @@ class Train
     @@all ||= []
   end
 
+  def to_s
+    [type.capitalize, number].join(' ')
+  end
+
   protected
 
-    # следующие методы не осуществляют вывод и не используются для управления извне, следовательно их можно отгородить
+  # следующие методы не осуществляют вывод и не используются для управления извне, следовательно их можно отгородить
 
-    def next_station
-      @route.stations[@current_station + 1]
-    end
+  def next_station
+    @route.stations[@current_station + 1]
+  end
 
-    def current_station
-      @route.stations[@current_station]
-    end
+  def current_station
+    @route.stations[@current_station]
+  end
 
-    def previous_station
-      @route.stations[@current_station - 1] if @current_station > 0
-    end
+  def previous_station
+    @route.stations[@current_station - 1] if @current_station > 0
+  end
 
 end

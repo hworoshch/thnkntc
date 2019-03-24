@@ -1,4 +1,5 @@
-require_relative 'menu'
+require_relative 'ui_helper'
+require_relative 'menu_helper'
 
 require_relative 'train'
 require_relative 'passenger_train'
@@ -9,203 +10,231 @@ require_relative 'cargo_car'
 require_relative 'station'
 require_relative 'route'
 
-def hr 
-  puts "\n"
-end
+class Main
 
-def spacer
-  puts "\n\n"
-end
+  include UiHelper
+  include MenuHelper
 
-def list_stations(stations)
-  stations.each_with_index { |station, index| puts "#{index}> #{station.title}" if station }
-end
-
-def list_trains(trains)
-  trains.each_with_index { |train, index| puts "#{index}> #{train.type.capitalize} #{train.number}" }
-end
-  
-
-loop do
-  show_main_menu
-  case gets.to_i
-    when 1
-      loop do
-        show_stations_menu
-        stations = Station.all
-        case gets.to_i
-          when 1
-            spacer
-            puts "СОЗДАТЬ СТАНЦИЮ"
-            hr
-            puts "Введите название станции: "
-            station_title = gets.chomp
-            Station.new(station_title)
-          when 2
-            spacer
-            puts "СПИСОК СТАНЦИЙ"
-            hr
-            list_stations(stations)
-          when 3
-            spacer
-            puts "Введите номер станции:"
-            list_stations(stations)
-            hr
-            station = stations[gets.to_i]
-            return unless station
-            spacer
-            puts "ПОЕЗДА НА СТАНЦИИ #{station.title.upcase}:"
-            list_trains(station.trains)
-          when 9
-            break
-        end
-      end
-    when 2
-      loop do
-        routes = Route.all
-        stations = []
-        show_routes_menu
-        case gets.to_i
-          when 1
-            spacer
-            puts "СОЗДАТЬ МАРШРУТ"
-            hr
-            puts "Введите номер начальной станции:"
-            stations = Station.all
-            list_stations(stations)
-            hr
-            start_station = stations[gets.to_i]
-            spacer
-            puts "Введите номер конечной станции:"
-            list_stations(stations.delete(start_station))
-            hr
-            end_station = stations[gets.to_i]
-            route = Route.new(start_station, end_station) 
-          when 2
-            spacer
-            puts "ИЗМЕНИТЬ МАРШРУТ"
-            hr
-            puts "Введите номер маршрута:"
-            routes.each_with_index { |route, index| puts "#{index}> #{route.stations.first.title} - #{route.stations.last.title}" }
-            hr
-            route = routes[gets.to_i]
-            spacer
-            puts "Введите номер операции:"
-            puts "1> Добавить станцию"
-            puts "2> Удалить станцию"
-            hr
-            case gets.to_i
-              when 1
-                spacer
-                puts "Введите номер добавляемой станции:"
-                stations = Station.all
-                available_stations = stations - route.stations
-                list_stations(available_stations)
-                hr
-                station = available_stations[gets.to_i]
-                route.add_station(station)
-              when 2
-                spacer
-                puts "Введите номер удаляемой станции:"
-                list_stations(route.stations)
-                hr
-                station = stations[gets.to_i]
-                route.remove_station(station)                
-            end
-          when 3
-            spacer
-            puts "НАЗНАЧИТЬ МАРШРУТ"
-            hr
-            puts "Введите номер маршрута:"
-            routes.each_with_index { |route, index| puts "#{index}> #{route.stations.first.title} - #{route.stations.last.title}" }
-            hr
-            route = routes[gets.to_i]
-            spacer
-            puts "Введите номер поезда: "
-            trains = Train.all
-            list_trains(trains)
-            hr
-            train = trains[gets.to_i]
-            train.set_route(route)
-          when 9
-            break
-        end
-      end
-    when 3
-      loop do
-        show_trains_menu
-        trains = Train.all
-        routes = Route.all
-        case gets.to_i
-          when 1
-            spacer
-            puts "СОЗДАТЬ ПОЕЗД"
-            hr
-            puts "Введите номер поезда:"
-            train_number = gets.to_i
-            spacer
-            puts "Введите номер типа:"
-            puts "1> Грузовой"
-            puts "2> Пассажирский"
-            hr
-            case gets.to_i
-              when 1
-                puts CargoTrain.new(train_number)
-              when 2
-                puts PassengerTrain.new(train_number)
-            end
-          when 2
-            spacer
-            puts "ИЗМЕНИТЬ ПОЕЗД"
-            hr
-            puts "Введите номер поезда:"
-            list_trains(trains)
-            hr
-            train = trains[gets.to_i]
-            return if train.nil?
-            spacer
-            puts "Введите номер операции:"
-            puts "1> Добавить вагон"
-            puts "2> Удалить вагон"
-            hr
-            case gets.to_i
-              when 1
-                train.add_car(CargoCar.new) if train.type == 'cargo'
-                train.add_car(PassengerCar.new) if train.type == 'passenger'
-              when 2
-                spacer
-                puts "Выберите вагон:"
-                train.cars.each_with_index { |car, index| puts "#{index}> #{car}" }
-                hr
-                car = train.cars[gets.to_i]
-                train.remove_car(car)
-            end
-          when 3
-            spacer
-            puts "УПРАВЛЕНИЕ ПОЕЗДОМ"
-            hr
-            puts "Выберите поезд:"
-            list_trains(trains)
-            hr
-            train = trains[gets.to_i]
-            return if train.nil?
-            spacer
-            puts "Введите номер действия:"
-            puts "1> Вперед по маршруту"
-            puts "2> Назад по маршруту"
-            hr
-            case gets.to_i
-              when 1
-                train.move_forward
-              when 2
-                train.move_back
-            end
-          when 9
-            break
-        end
-      end
-    when 9
-      break
+  def initialize
+    @stations = []
+    @routes = []
+    @trains = []
   end
-end
 
+  def run
+    loop do
+      header(MAIN_MENU_TITLE)
+      show_menu(MAIN_MENU)
+      case gets.to_i
+        when 1 then stations_menu
+        when 2 then routes_menu
+        when 3 then trains_menu
+        when 0 then break
+      end
+    end
+  end
+
+  private
+
+  def show_collection(collection)
+    collection.each.with_index(1) do |item, index|
+      puts "#{index}> #{item}"
+    end 
+  end
+
+  def select_from_collection(collection)
+    hr
+    index = gets.to_i
+    collection[index - 1]
+  end
+
+  def stations_menu
+    loop do
+      @stations = Station.all
+      header(STATIONS_MENU_TITLE)
+      show_menu(STATIONS_MENU)
+      case gets.to_i
+        when 1 then create_station
+        when 2 then show_stations
+        when 3 then show_station_trains
+        when 0 then break
+      end
+    end
+  end
+
+  def create_station
+    header("СОЗДАТЬ СТАНЦИЮ")
+    puts "Введите название станции: "
+    station_title = gets.chomp
+    Station.new(station_title)
+  end
+
+  def show_stations
+    header("СПИСОК СТАНЦИЙ")
+    show_collection(@stations)
+  end
+
+  def show_station_trains
+    spacer
+    puts "Введите номер станции:"
+    show_collection(@stations)
+    station = select_from_collection(@stations)
+    return unless station
+    header("ПОЕЗДА НА СТАНЦИИ #{station.title.upcase}:")
+    show_collection(station.trains)
+  end
+
+  def routes_menu
+    loop do
+      @routes = Route.all
+      header(ROUTES_MENU_TITLE)
+      show_menu(ROUTES_MENU)
+      case gets.to_i
+        when 1 then create_route
+        when 2 then manage_route
+        when 3 then assign_route
+        when 0 then break
+      end
+    end
+  end
+
+  def create_route
+    @stations = Station.all
+    @available_stations = []
+    header("СОЗДАТЬ МАРШРУТ")
+    puts "Введите номер начальной станции:"
+    show_collection(@stations)
+    start_station = select_from_collection(@stations)
+    @stations.delete(start_station)
+    spacer
+    puts "Введите номер конечной станции:"
+    show_collection(@stations)
+    end_station = select_from_collection(@stations)
+    route = Route.new(start_station, end_station)
+  end
+
+  def manage_route
+    header("ИЗМЕНИТЬ МАРШРУТ")
+    puts "Введите номер маршрута:"
+    show_collection(@routes)
+    @route = select_from_collection(@routes)
+    spacer
+    show_collection(@route.stations)
+    spacer
+    puts "Введите номер:"
+    show_menu(ROUTES_MANAGE_MENU)
+    case gets.to_i
+      when 1 then route_add_station
+      when 2 then route_remove_station
+      when 0 then return
+    end
+  end
+
+  def route_add_station
+    @stations = Station.all - @route.stations
+    spacer
+    puts "Введите номер добавляемой станции:"
+    show_collection(@stations)
+    station = select_from_collection(@stations)
+    @route.add_station(station)
+  end
+
+  def route_remove_station
+    spacer
+    puts "Введите номер удаляемой станции:"
+    show_collection(@route.stations)
+    station =  select_from_collection(@route.stations)
+    @route.remove_station(station)
+  end
+
+  def assign_route
+    @trains = Train.all
+    header("НАЗНАЧИТЬ МАРШРУТ")
+    puts "Введите номер маршрута:"
+    show_collection(@routes)
+    route = select_from_collection(@routes)
+    spacer
+    puts "Введите номер поезда: "
+    show_collection(@trains)
+    train = select_from_collection(@trains)
+    train.set_route(route)
+  end
+
+  def trains_menu
+    loop do
+      @trains = Train.all
+      header(TRAINS_MENU_TITLE)
+      show_menu(TRAINS_MENU)
+      case gets.to_i
+        when 1 then create_train
+        when 2 then manage_train
+        when 3 then drive_train
+        when 0 then break
+      end
+    end
+  end
+
+  def create_train
+    header("СОЗДАТЬ ПОЕЗД")
+    puts "Введите номер поезда:"
+    train_number = gets.to_i
+    spacer
+    puts "Введите тип поезда:"
+    show_menu(TRAINS_CREATE_MENU)
+    case gets.to_i
+      when 1 then CargoTrain.new(train_number)
+      when 2 then PassengerTrain.new(train_number)
+      when 0 then return
+    end
+  end
+
+  def manage_train
+    header("ИЗМЕНИТЬ ПОЕЗД")
+    puts "Введите номер поезда:"
+    show_collection(@trains)
+    @train = select_from_collection(@trains)
+    return unless @train
+    spacer
+    show_collection(@train.cars)
+    spacer
+    puts "Введите номер операции:"
+    show_menu(TRAINS_MANAGE_MENU)
+    case gets.to_i
+      when 1 then train_add_car
+      when 2 then train_remove_car
+      when 0 then return
+    end
+  end
+
+  def train_add_car
+    case @train.type
+      when 'cargo' then @train.add_car(CargoCar.new)
+      when 'passenger' then @train.add_car(PassengerCar.new)
+    end
+  end
+
+  def train_remove_car
+    spacer
+    puts "Выберите вагон:"
+    show_collection(@train.cars)
+    car = select_from_collection(@train.cars)
+    @train.remove_car(car)
+  end
+
+  def drive_train
+    header("УПРАВЛЕНИЕ ПОЕЗДОМ")
+    puts "Выберите поезд:"
+    show_collection(@trains)
+    train = select_from_collection(@trains)
+    return unless train
+    spacer
+    puts "Введите номер действия:"
+    show_menu(TRAINS_DRIVE_MENU)
+    case gets.to_i
+      when 1 then train.move_forward
+      when 2 then train.move_back
+      when 0 then return
+    end
+  end
+
+end

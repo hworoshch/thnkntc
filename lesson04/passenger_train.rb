@@ -8,4 +8,8 @@ class PassengerTrain < Train
     @type = "passenger"
   end
 
+  def attachable_car?(car)
+    car.is_a?(PassengerCar)
+  end
+  
 end

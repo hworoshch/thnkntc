@@ -24,4 +24,8 @@ class Station
     @all ||= []
   end
 
+  def to_s
+    title
+  end
+
 end

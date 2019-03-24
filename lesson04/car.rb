@@ -3,7 +3,15 @@ class Car
   attr_accessor :train
 
   def initialize
-    @train = nil
+    @attached = false
+  end
+
+  def attached!
+    @attached = true
+  end
+
+  def attached?
+    @attached
   end
 
 end

@@ -24,4 +24,8 @@ class Route
     @all ||= []
   end
 
+  def to_s
+    [stations.first.title, stations.last.title].join(' - ')
+  end
+
 end
