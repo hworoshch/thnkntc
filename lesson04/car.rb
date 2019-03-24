@@ -6,12 +6,16 @@ class Car
     @attached = false
   end
 
+  def attached?
+    @attached
+  end
+
   def attached!
     @attached = true
   end
 
-  def attached?
-    @attached
+  def detached!
+    @attached = false
   end
 
 end

@@ -15,21 +15,15 @@ class Main
   include UiHelper
   include MenuHelper
 
-  def initialize
-    @stations = []
-    @routes = []
-    @trains = []
-  end
-
   def run
     loop do
       header(MAIN_MENU_TITLE)
       show_menu(MAIN_MENU)
       case gets.to_i
-        when 1 then stations_menu
-        when 2 then routes_menu
-        when 3 then trains_menu
-        when 0 then break
+      when 1 then stations_menu
+      when 2 then routes_menu
+      when 3 then trains_menu
+      when 0 then break
       end
     end
   end
@@ -50,14 +44,13 @@ class Main
 
   def stations_menu
     loop do
-      @stations = Station.all
       header(STATIONS_MENU_TITLE)
       show_menu(STATIONS_MENU)
       case gets.to_i
-        when 1 then create_station
-        when 2 then show_stations
-        when 3 then show_station_trains
-        when 0 then break
+      when 1 then create_station
+      when 2 then show_stations
+      when 3 then show_station_trains
+      when 0 then break
       end
     end
   end
@@ -71,14 +64,14 @@ class Main
 
   def show_stations
     header("СПИСОК СТАНЦИЙ")
-    show_collection(@stations)
+    show_collection(Station.all)
   end
 
   def show_station_trains
     spacer
     puts "Введите номер станции:"
-    show_collection(@stations)
-    station = select_from_collection(@stations)
+    show_collection(Station.all)
+    station = select_from_collection(Station.all)
     return unless station
     header("ПОЕЗДА НА СТАНЦИИ #{station.title.upcase}:")
     show_collection(station.trains)
@@ -86,90 +79,84 @@ class Main
 
   def routes_menu
     loop do
-      @routes = Route.all
       header(ROUTES_MENU_TITLE)
       show_menu(ROUTES_MENU)
       case gets.to_i
-        when 1 then create_route
-        when 2 then manage_route
-        when 3 then assign_route
-        when 0 then break
+      when 1 then create_route
+      when 2 then manage_route
+      when 3 then assign_route
+      when 0 then break
       end
     end
   end
 
   def create_route
-    @stations = Station.all
-    @available_stations = []
     header("СОЗДАТЬ МАРШРУТ")
     puts "Введите номер начальной станции:"
-    show_collection(@stations)
-    start_station = select_from_collection(@stations)
-    @stations.delete(start_station)
-    spacer
+    show_collection(Station.all)
+    start_station = select_from_collection(Station.all)
+    hr
     puts "Введите номер конечной станции:"
-    show_collection(@stations)
-    end_station = select_from_collection(@stations)
+    end_station = select_from_collection(Station.all - [start_station])
+    return if start_station.nil? || end_station.nil?
     route = Route.new(start_station, end_station)
   end
 
   def manage_route
     header("ИЗМЕНИТЬ МАРШРУТ")
     puts "Введите номер маршрута:"
-    show_collection(@routes)
-    @route = select_from_collection(@routes)
+    show_collection(Route.all)
+    route = select_from_collection(Route.all)
     spacer
-    show_collection(@route.stations)
+    show_collection(route.stations)
     spacer
     puts "Введите номер:"
     show_menu(ROUTES_MANAGE_MENU)
     case gets.to_i
-      when 1 then route_add_station
-      when 2 then route_remove_station
-      when 0 then return
+    when 1 then route_add_station(route)
+    when 2 then route_remove_station(route)
+    when 0 then return
     end
   end
 
-  def route_add_station
-    @stations = Station.all - @route.stations
+  def route_add_station(route)
+    available_stations = Station.all - route.stations
     spacer
     puts "Введите номер добавляемой станции:"
-    show_collection(@stations)
-    station = select_from_collection(@stations)
-    @route.add_station(station)
+    show_collection(available_stations)
+    station = select_from_collection(available_stations)
+    route.add_station(station)
   end
 
-  def route_remove_station
+  def route_remove_station(route)
     spacer
     puts "Введите номер удаляемой станции:"
-    show_collection(@route.stations)
-    station =  select_from_collection(@route.stations)
-    @route.remove_station(station)
+    show_collection(route.stations)
+    station =  select_from_collection(route.stations)
+    route.remove_station(station)
   end
 
   def assign_route
-    @trains = Train.all
     header("НАЗНАЧИТЬ МАРШРУТ")
     puts "Введите номер маршрута:"
-    show_collection(@routes)
-    route = select_from_collection(@routes)
+    show_collection(Route.all)
+    route = select_from_collection(Route.all)
     spacer
     puts "Введите номер поезда: "
-    show_collection(@trains)
-    train = select_from_collection(@trains)
+    show_collection(Train.all)
+    train = select_from_collection(Train.all)
     train.set_route(route)
   end
 
   def trains_menu
     loop do
-      @trains = Train.all
       header(TRAINS_MENU_TITLE)
       show_menu(TRAINS_MENU)
       case gets.to_i
-        when 1 then create_train
-        when 2 then manage_train
-        when 3 then drive_train
-        when 0 then break
+      when 1 then create_train
+      when 2 then manage_train
+      when 3 then drive_train
+      when 0 then break
       end
     end
   end
@@ -182,58 +169,58 @@ class Main
     puts "Введите тип поезда:"
     show_menu(TRAINS_CREATE_MENU)
     case gets.to_i
-      when 1 then CargoTrain.new(train_number)
-      when 2 then PassengerTrain.new(train_number)
-      when 0 then return
+    when 1 then CargoTrain.new(train_number)
+    when 2 then PassengerTrain.new(train_number)
+    when 0 then return
     end
   end
 
   def manage_train
     header("ИЗМЕНИТЬ ПОЕЗД")
     puts "Введите номер поезда:"
-    show_collection(@trains)
-    @train = select_from_collection(@trains)
-    return unless @train
+    show_collection(Train.all)
+    train = select_from_collection(Train.all)
+    return unless train
     spacer
-    show_collection(@train.cars)
+    show_collection(train.cars)
     spacer
     puts "Введите номер операции:"
     show_menu(TRAINS_MANAGE_MENU)
     case gets.to_i
-      when 1 then train_add_car
-      when 2 then train_remove_car
-      when 0 then return
+    when 1 then train_add_car(train)
+    when 2 then train_remove_car(train)
+    when 0 then return
     end
   end
 
-  def train_add_car
-    case @train.type
-      when 'cargo' then @train.add_car(CargoCar.new)
-      when 'passenger' then @train.add_car(PassengerCar.new)
+  def train_add_car(train)
+    case train.type
+    when 'cargo' then train.add_car(CargoCar.new)
+    when 'passenger' then train.add_car(PassengerCar.new)
     end
   end
 
-  def train_remove_car
+  def train_remove_car(train)
     spacer
     puts "Выберите вагон:"
-    show_collection(@train.cars)
-    car = select_from_collection(@train.cars)
-    @train.remove_car(car)
+    show_collection(train.cars)
+    car = select_from_collection(train.cars)
+    train.remove_car(car)
   end
 
   def drive_train
     header("УПРАВЛЕНИЕ ПОЕЗДОМ")
     puts "Выберите поезд:"
-    show_collection(@trains)
-    train = select_from_collection(@trains)
+    show_collection(Train.all)
+    train = select_from_collection(Train.all)
     return unless train
     spacer
     puts "Введите номер действия:"
     show_menu(TRAINS_DRIVE_MENU)
     case gets.to_i
-      when 1 then train.move_forward
-      when 2 then train.move_back
-      when 0 then return
+    when 1 then train.move_forward
+    when 2 then train.move_back
+    when 0 then return
     end
   end
 

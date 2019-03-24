@@ -29,6 +29,7 @@ class Train
     return unless speed.zero?
     car.train = nil
     @cars.delete(car)
+    car.detached!
   end
 
   def set_route(route)
