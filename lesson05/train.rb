@@ -1,8 +1,10 @@
 require_relative 'vendor'
+require_relative 'instance_counter'
 
 class Train
 
   include Vendor
+  include InstanceCounter
 
   attr_reader :speed, :number, :cars
 
@@ -10,6 +12,7 @@ class Train
     @number = number
     @cars = []
     @speed = 0
+    register_instance
     self.class.all << self
   end
 
@@ -69,8 +72,6 @@ class Train
   end
 
   protected
-
-  # следующие методы не осуществляют вывод и не используются для управления извне, следовательно их можно отгородить
 
   def next_station
     @route.stations[@current_station + 1]

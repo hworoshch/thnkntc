@@ -1,10 +1,15 @@
+require_relative 'instance_counter'
+
 class Station
+
+  include InstanceCounter
 
   attr_reader :trains, :title
 
   def initialize(title)
     @title = title
     @trains = []
+    register_instance
     self.class.all << self
   end
 
