@@ -9,7 +9,7 @@ module InstanceCounter
     @@instances = 0
 
     def instances
-      @@instances ||= 0
+      @@instances 
     end
   end
 
