@@ -6,6 +6,10 @@ class Station
 
   attr_reader :trains, :title
 
+  def self.all
+    @all ||= []
+  end
+
   def initialize(title)
     @title = title
     @trains = []
@@ -23,10 +27,6 @@ class Station
 
   def trains_by_type(type)
     @trains.select { |train| train.type == type }
-  end
-
-  def self.all
-    @all ||= []
   end
 
   def to_s

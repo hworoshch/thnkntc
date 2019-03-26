@@ -1,6 +1,5 @@
 require_relative 'ui_helper'
 require_relative 'menu_helper'
-
 require_relative 'train'
 require_relative 'passenger_train'
 require_relative 'cargo_train'

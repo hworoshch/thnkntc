@@ -4,8 +4,6 @@ class Car
 
   include Vendor
 
-  attr_accessor :train
-
   def initialize
     @attached = false
   end

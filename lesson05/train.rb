@@ -8,6 +8,14 @@ class Train
 
   attr_reader :speed, :number, :cars
 
+  def self.all
+    @@all ||= []
+  end
+
+  def self.find(number)
+    self.all.select { |train| train.number == number }
+  end
+
   def initialize(number)
     @number = number
     @cars = []
@@ -57,14 +65,6 @@ class Train
     current_station.remove_train(self)
     @current_station -= 1
     current_station.add_train(self)
-  end
-
-  def self.all
-    @@all ||= []
-  end
-
-  def self.find(number)
-    self.all.select { |train| train.number == number }
   end
 
   def to_s

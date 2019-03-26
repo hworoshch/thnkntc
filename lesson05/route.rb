@@ -6,6 +6,10 @@ class Route
 
   attr_reader :stations
 
+  def self.all
+    @all ||= []
+  end
+
   def initialize(start_station, end_station)
     @stations = [start_station, end_station]
     self.class.all << self
@@ -23,10 +27,6 @@ class Route
 
   def show_stations
     @stations.each { |station| puts station.title }
-  end
-
-  def self.all
-    @all ||= []
   end
 
   def to_s
