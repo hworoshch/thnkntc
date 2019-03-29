@@ -183,7 +183,6 @@ class Main
     puts "Поезд #{train_number} создан"
   rescue ArgumentError => e
     puts e
-    puts e.backtrace
   end
 
   def manage_train

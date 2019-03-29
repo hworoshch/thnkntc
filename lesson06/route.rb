@@ -4,6 +4,9 @@ class Route
 
   include InstanceCounter
 
+  EMPTY_START_STATION = "Не указана начальная станция"
+  EMPTY_END_STATION = "Не указана конечная станция"
+
   attr_reader :stations
 
   def self.all
@@ -44,10 +47,8 @@ class Route
   protected
 
   def validate!(start_station, end_station)
-    puts "St #{start_station}"
-    puts "En #{end_station}"
-    raise ArgumentError, "Не указана начальная станция" if start_station.empty?
-    raise ArgumentError, "Не указана конечная станция" if end_station.empty?
+    raise ArgumentError, EMPTY_START_STATION if start_station.nil?
+    raise ArgumentError, EMPTY_END_STATION if end_station.nil?
   end
 
 end

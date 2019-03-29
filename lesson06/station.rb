@@ -4,6 +4,8 @@ class Station
 
   include InstanceCounter
 
+  EMPTY_STATION_TITLE = "Не указано название станции"
+
   attr_reader :trains, :title
 
   def self.all
@@ -44,7 +46,7 @@ class Station
   protected
 
   def validate!
-    raise ArgumentError, "Не указано название станции" if @title.empty?
+    raise ArgumentError, EMPTY_STATION_TITLE if @title.empty?
   end
 
 end
