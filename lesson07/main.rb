@@ -259,7 +259,7 @@ class Main
     train = select_from_collection(Train.all)
     return unless train
     header("ВАГОНЫ ПОЕЗДА #{train.number}:")
-    train.each_car_with_index { |index, car| puts "#{car.readable_type} вагон №#{index}, занято: #{car.occupied}, свободно: #{car.vacant}" }
+    train.each_car_with_index { |car, index| puts "#{car.readable_type} вагон №#{index}, занято: #{car.occupied}, свободно: #{car.vacant}" }
   end
 
   def load_car
@@ -281,6 +281,8 @@ class Main
       volume = 1
     end
     car.occupy!(volume)
+  rescue => e
+    puts e.message
   end
 
 end

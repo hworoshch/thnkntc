@@ -30,7 +30,7 @@ class Train
 
   def each_car_with_index
     @cars.each.with_index(1) do |car, index|
-      yield(index, car)
+      yield(car, index)
     end
   end
 
