@@ -77,7 +77,7 @@ class Main
     station = select_from_collection(Station.all)
     return unless station
     header("ПОЕЗДА НА СТАНЦИИ #{station.title.upcase}:")
-    station.list_trains { |type, number, cars_count| puts "#{type} поезд №#{number}, вагонов: #{cars_count}" }
+    station.each_train { |train| puts "#{train.readable_type} поезд №#{train.number}, вагонов: #{train.cars.count}" }
   end
 
   def routes_menu
@@ -259,7 +259,7 @@ class Main
     train = select_from_collection(Train.all)
     return unless train
     header("ВАГОНЫ ПОЕЗДА #{train.number}:")
-    train.list_cars { |type, number, vacant, occupied| puts "#{type} вагон №#{number}, занято: #{occupied}, свободно: #{vacant}" }
+    train.each_car_with_index { |index, car| puts "#{car.readable_type} вагон №#{index}, занято: #{car.occupied}, свободно: #{car.vacant}" }
   end
 
   def load_car

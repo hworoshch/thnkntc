@@ -28,9 +28,9 @@ class Train
     self.class.all << self
   end
 
-  def list_cars
+  def each_car_with_index
     @cars.each.with_index(1) do |car, index|
-      yield(car.readable_type, index, car.occupied, car.vacant)
+      yield(index, car)
     end
   end
 

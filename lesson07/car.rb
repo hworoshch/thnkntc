@@ -4,6 +4,8 @@ class Car
 
   include Vendor
 
+  NOT_ENOUGH_SPACE = "Недостаточно свободного места"
+
   attr_reader :occupied
 
   def self.all
@@ -33,8 +35,9 @@ class Car
     @attached = false
   end
 
-  def occupy!(volume = 1)
-    @occupied += volume if (@occupied + volume) <= @capacity
+  def occupy(volume)
+    raise NOT_ENOUGH_SPACE if volume > vacant
+    @occupied += volume 
   end
 
   def vacant

@@ -10,4 +10,8 @@ class PassengerCar < Car
     "passenger"
   end
 
+  def occupy(_volume)
+    super(1)
+  end
+
 end

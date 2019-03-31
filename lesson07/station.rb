@@ -28,9 +28,9 @@ class Station
     @trains.delete(train)
   end
 
-  def list_trains
+  def each_train
     @trains.each do |train|
-      yield(train.readable_type, train.number, train.cars.count)
+      yield(train)
     end
   end
 
