@@ -77,7 +77,9 @@ class Main
     return unless station
 
     header("ПОЕЗДА НА СТАНЦИИ #{station.title.upcase}:")
-    station.each_train { |train| puts "#{train.readable_type} поезд №#{train.number}, вагонов: #{train.cars.count}" }
+    station.each_train do |train| 
+      puts "#{train.readable_type} поезд №#{train.number}, вагонов: #{train.cars.count}" 
+    end
   end
 
   def routes_menu
@@ -262,7 +264,9 @@ class Main
     return unless train
 
     header("ВАГОНЫ ПОЕЗДА #{train.number}:")
-    train.each_car_with_index { |car, index| puts "#{car.readable_type} вагон №#{index}, занято: #{car.occupied}, свободно: #{car.vacant}" }
+    train.each_car_with_index do |car, index| 
+      puts "#{car.readable_type} вагон №#{index}, занято: #{car.occupied}, свободно: #{car.vacant}"
+    end
   end
 
   def load_car
