@@ -39,8 +39,8 @@ module Validation
       raise Validation::EmptyValue if value.nil? || value == ''
     end
 
-    def validate_type(value)
-      raise Validation::WrongType unless value.is_a? type
+    def validate_type(value, type)
+      raise Validation::WrongType unless value.is_a?(type)
     end
 
     def validate_format(value, format)
