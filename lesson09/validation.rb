@@ -1,8 +1,8 @@
 module Validation
 
-  EmptyValue = Class.new(StandardError)
-  WrongFormat = Class.new(StandardError)
-  WrongType = Class.new(StandardError)
+  class EmptyValue < StandardError; end
+  class WrongFormat < StandardError; end
+  class WrongType < StandardError; end
 
   def self.included(base)
     base.extend ClassMethods
@@ -28,13 +28,9 @@ module Validation
 
     def validate!
       validators = self.class.instance_variable_get(:@validators) || []
-      validators.each do |validator|
+      validators.each do |var_name, validator|
         value = instance_variable_get(validator[:name])
-        case validator[:type]
-        when :presence validate_presence(value)
-        when :format validate_format(value, validator[:param])
-        when :type validate_type(value, validator[:param])
-        end
+        send("validate_#{validator[:type]}", value, *validator[:param])
       end
       true
     end
