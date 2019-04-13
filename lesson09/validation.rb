@@ -20,6 +20,7 @@ module Validation
   module InstanceMethods
     def valid?
       validate!
+      true
     rescue StandardError
       false
     end
@@ -28,11 +29,10 @@ module Validation
 
     def validate!
       validators = self.class.instance_variable_get(:@validators) || []
-      validators.each do |var_name, validator|
+      validators.values.each do |validator|
         value = instance_variable_get(validator[:name])
         send("validate_#{validator[:type]}", value, *validator[:param])
       end
-      true
     end
 
     def validate_presence(value)
