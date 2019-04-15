@@ -9,22 +9,35 @@ class Game
   DEFAULT_BET = 10
 
   attr_accessor :bank
+  attr_accessor :current_player
 
   def initialize
     @gamer = Gamer.new
     @dealer = Dealer.new
+    #@current_player = @gamer
     @pack = Pack.new
     @bank = 0
   end
 
-  def first_deal
-    @pack.deal(@gamer, 2)
-    withdraw(@gamer, self, DEFAULT_BET)
-    show_cards(@gamer)
-    @pack.deal(@dealer, 2)
-    withdraw(@dealer, self, DEFAULT_BET)
-    show_cards(@dealer)
+  def run
+    Game.new
   end
+
+  def first_deal
+    [@gamer, @dealer].each do |player|
+      @pack.deal(player, 2)
+      withdraw(player, self, DEFAULT_BET)
+      show_cards(player)
+    end
+  end
+
+  def add_card(player)
+    return if player.cards.count > 2
+    @pack.deal(player)
+    show_cards(player)
+  end
+
+  protected
 
   def withdraw(from, to, value)
     from.bank -= value
@@ -33,7 +46,11 @@ class Game
 
   def show_cards(player)
     print "#{player.name}:"
-    player.cards.each { |card| print " #{card.suit}#{card.rank}" }
-    puts ", score: #{player.score}\n"
+    if player.is_a?(Gamer)
+      player.cards.each { |card| print " #{card.suit}#{card.rank}" }
+      puts ", score: #{player.score}\n"
+    else
+      player.cards.each { |card| print " *" }
+    end
   end
 end
