@@ -3,7 +3,7 @@ class Player
   attr_accessor :cards, :bank
   attr_reader :score, :name
 
-  def initialize
+  def initialize(*name)
     @bank = 100
     @cards = []
   end
