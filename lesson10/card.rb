@@ -1,24 +1,27 @@
 class Card
 
   attr_reader :rank, :suit
+  attr_accessor :value
 
   def initialize(suit, rank)
     @suit = suit
     @rank = rank
+    @value = get_value
   end
 
-  def value
-    self.get_value
+  def discount_ace!(card)
+    return unless @rank == 'A'
+    @value = 1
   end
 
   protected
 
   def get_value
-    if ('2'..'10').to_a.include?(self.rank)
-      self.rank.to_i
-    elsif ['J', 'Q', 'K'].include?(self.rank)
+    if ('2'..'10').to_a.include?(@rank)
+      @rank.to_i
+    elsif ['J', 'Q', 'K'].include?(@rank)
       10
-    elsif self.rank == 'A'
+    elsif @rank == 'A'
       11
     end
   end
